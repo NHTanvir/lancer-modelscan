@@ -1,0 +1,46 @@
+[package]
+name = "lancer-modelscan"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Rust clone of Protect AI's modelscan — serialized ML model security scanner with a native GUI. Part of the Lancer toolkit."
+default-run = "lancer-modelscan"
+
+[[bin]]
+name = "lancer-modelscan"
+path = "src/main.rs"
+
+[dependencies]
+ms-core = { workspace = true }
+ms-formats = { workspace = true }
+ms-detectors = { workspace = true }
+ms-report = { workspace = true }
+
+clap = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+anyhow = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+
+# GUI stack (optional, but in the default feature set — plain invocation opens the GUI)
+eframe = { workspace = true, optional = true }
+egui = { workspace = true, optional = true }
+egui_extras = { workspace = true, optional = true }
+rfd = { workspace = true, optional = true }
+directories = { workspace = true, optional = true }
+arboard = { workspace = true, optional = true }
+tiny_http = { workspace = true, optional = true }
+
+# Networking (optional: --fetch-url for Hugging Face artifacts, --explain LLM client)
+reqwest = { workspace = true, optional = true }
+tokio = { workspace = true, optional = true }
+
+[features]
+default = ["gui", "net"]
+# Native desktop GUI + the cross-tool local HTTP server.
+gui = ["dep:eframe", "dep:egui", "dep:egui_extras", "dep:rfd", "dep:directories", "dep:arboard", "dep:tiny_http"]
+# Network features: --fetch-url model download, --explain LLM augmentation.
+net = ["dep:reqwest", "dep:tokio"]
