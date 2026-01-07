@@ -1,0 +1,19 @@
+[package]
+name = "ms-formats"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Parse-only format parsers (pickle/joblib/dill/cloudpickle/pytorch/tensorflow/keras/hdf5/onnx/safetensors/gguf) for lancer-modelscan."
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+zip = { workspace = true }
+base64 = "0.22"
+
+[dev-dependencies]
+serde_json = { workspace = true }

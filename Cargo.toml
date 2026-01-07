@@ -1,21 +1,85 @@
-[package]
-name = "lancer-modelscan"
+[workspace]
+resolver = "2"
+members = [
+    "lancer-modelscan",
+    "ms-core",
+    "ms-formats",
+    "ms-detectors",
+    "ms-report",
+    "lancer-modelscan-py",
+]
+# Default build (and the build.bat / build-linux.sh scripts, which call
+# `cargo build --release`) only builds the binary + library crates.
+# The PyO3 bindings crate is opt-in (`cargo build -p lancer-modelscan-py`)
+# so a plain build never requires a Python toolchain.
+default-members = [
+    "lancer-modelscan",
+    "ms-core",
+    "ms-formats",
+    "ms-detectors",
+    "ms-report",
+]
+
+[workspace.package]
 version = "0.1.0"
 edition = "2021"
-description = "Rust clone of modelscan — part of the Lancer bug bounty toolkit"
 authors = ["NHTanvir <naymulhasantanvir10@gmail.com>"]
 license = "MIT"
 repository = "https://github.com/NHTanvir/lancer-modelscan"
+description = "Rust clone of Protect AI's modelscan — serialized ML model security scanner. Part of the Lancer toolkit."
 
-[dependencies]
-clap = { version = "4", features = ["derive"] }
-tokio = { version = "1", features = ["full"] }
+[workspace.dependencies]
+# Internal crates
+ms-core = { path = "ms-core", version = "0.1.0" }
+ms-formats = { path = "ms-formats", version = "0.1.0" }
+ms-detectors = { path = "ms-detectors", version = "0.1.0" }
+ms-report = { path = "ms-report", version = "0.1.0" }
+
+# Serialization / config
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+toml = "0.8"
+
+# Errors / logging
+thiserror = "1"
 anyhow = "1"
 tracing = "0.1"
-tracing-subscriber = "0.3"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt"] }
+
+# Core engine
+rayon = "1"
+ignore = "0.4"
+globset = "0.4"
+zip = { version = "2", default-features = false, features = ["deflate"] }
+sha2 = "0.10"
+regex = "1"
+
+# Reporting
+tera = "1"
+chrono = { version = "0.4", default-features = false, features = ["clock", "serde"] }
+
+# CLI
+clap = { version = "4", features = ["derive"] }
+
+# GUI (optional, default-on for the binary)
+eframe = { version = "0.29", default-features = false, features = ["default_fonts", "glow", "wayland", "x11"] }
+egui = "0.29"
+egui_extras = { version = "0.29", default-features = false }
+rfd = "0.14"
+directories = "5"
+arboard = "3"
+tiny_http = "0.12"
+
+# Networking (optional: --fetch-url / --explain)
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls", "blocking"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+
+# PyO3 bindings (only used by lancer-modelscan-py)
+pyo3 = { version = "0.22", features = ["extension-module", "abi3-py38"] }
 
 [profile.release]
 opt-level = 3
 lto = true
 codegen-units = 1
 strip = true
+panic = "unwind"
